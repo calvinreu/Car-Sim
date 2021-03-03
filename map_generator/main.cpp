@@ -22,6 +22,10 @@ int main(int argc, char const *argv[])
     log("writing to: " + std::string(argv[1]));
 
     size_t temp = UI.lines.size();
+    int tempA[2];
+    SDL_GetRendererOutputSize(UI.renderer, tempA, tempA+1);
+
+    saveFile.write((char*)(tempA), sizeof(int)*2);
     saveFile.write((char*)(&temp), sizeof(std::size_t));
     saveFile.write((char*)(&(*UI.lines.begin())), sizeof(SDL_Point)*temp);
 

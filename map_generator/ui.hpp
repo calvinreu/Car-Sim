@@ -22,17 +22,12 @@ namespace objects{
     const Uint8 a = 255;
 }
 
-struct line
-{
-    int x_beg, y_beg, x_end, y_end;
-};
-
 class ui
 {
 private:
     SDL_Window* window;
-    SDL_Renderer* renderer;
 public:
+    SDL_Renderer* renderer;
     std::vector<SDL_Point> lines;
     void NewFrame() const {
         SDL_SetRenderDrawColor(renderer, background::r, background::g, background::b, background::a);
