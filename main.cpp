@@ -10,21 +10,23 @@ int main(int argc, char const *argv[])
         return -1;
     }
 
+    //load map from file
     std::ifstream mapload(argv[1], std::ifstream::binary);
-    size_t mapVSize, mapW, mapH;
-    
+    size_t mapVSize;
+    int mapW, mapH;
+    log("loading map from file: " + std::string(argv[1]));
+    mapload.read((char*)(&mapW), sizeof(int));
+    mapload.read((char*)(&mapH), sizeof(int));
     mapload.read((char*)(&mapVSize), sizeof(std::size_t));
-
     std::vector<SDL_Point> map(mapVSize);
-    
     mapload.read((char*)(&(*map.begin())), sizeof(SDL_Point) * mapVSize);
-
-    SDL_Point car_position = {.x = 960, .y = 540};
+    SDL_Point car_position = {.x = mapW/2, .y = mapH/2};
     double angle = 0;
+
     log("init SDL");
-    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS);
     log("creating graphics instance");
-    graphic gOut(map, 1920, 1080, car_position, angle);
+    graphic gOut(map, mapW, mapH, car_position, angle);
     gOut.newFrame();
     SDL_Delay(1000);
 
