@@ -2,6 +2,8 @@
 
 using std::to_string;
 
+const Uint32 min_frame_time = 1000/30;
+
 namespace background{
     const Uint8 r = 255;
     const Uint8 g = 255;
@@ -14,6 +16,33 @@ namespace objects{
     const Uint8 g = 0;
     const Uint8 b = 0;
     const Uint8 a = 255;
+}
+
+void graphic::renderLoop(bool &renderer_running) {
+    
+    Uint32 start_time, frame_time;
+        
+    renderer_running = true;
+    while (renderer_running) {
+        start_time = SDL_GetTicks();
+        SDL_Event event;
+
+        while (0 != SDL_PollEvent(&event)){
+            switch (event.type) {
+            case SDL_MOUSEBUTTONDOWN:
+                //do nothing
+                break;
+            case SDL_QUIT:
+                renderer_running = false;
+                return;
+            }
+        }
+
+        newFrame();
+        frame_time = SDL_GetTicks() - start_time;
+        if(frame_time < min_frame_time)
+            SDL_Delay(min_frame_time-frame_time);
+    }
 }
 
 void graphic::newFrame(){

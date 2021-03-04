@@ -5,6 +5,9 @@
 #include <list>
 #include <vector>
 #include <log.hpp>
+#include <thread>
+#include <iostream>
+#include <mutex>
 
 using logfile::log;
 using logfile::SDL_StringError;
@@ -29,10 +32,13 @@ private:
 
     int& width()  {return map_dRect.w;}
     int& height() {return map_dRect.h;}
-
-public:
-
     void newFrame();
+public:
+    /**
+     * @param renderer_running bool which tells the renderer if it is running on SDL_QUIT the render loop will set it to false and quit
+     * @brief start a rendering loop
+    **/ 
+    void renderLoop(bool &renderer_running);
 
     const int& width()  const {return map_dRect.w;}
     const int& height() const {return map_dRect.h;}
