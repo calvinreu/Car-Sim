@@ -15,6 +15,11 @@ bool DoIntersect(const linear_function &first, const linear_function &second) { 
 
 pair& IntersectionPoint(const linear_function &first, const linear_function &second) {
     pair position;
+
+    if (first.c == second.c) {
+        return position = {.x = 0, .y = first.c};
+    }
+
     position.x = (first.m-second.m)/(second.c-first.c);
     position.y = first.c + (first.m*position.x);
     return position;
