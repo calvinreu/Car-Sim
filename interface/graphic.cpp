@@ -29,9 +29,6 @@ void graphic::renderLoop(bool &renderer_running) {
 
         while (0 != SDL_PollEvent(&event)){
             switch (event.type) {
-            case SDL_MOUSEBUTTONDOWN:
-                //do nothing
-                break;
             case SDL_QUIT:
                 renderer_running = false;
                 return;
