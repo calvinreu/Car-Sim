@@ -69,10 +69,14 @@ double DoIntersect(const double angle, const SDL_Point position, std::vector<SDL
                 }
             }else{
                 temp_vec = IntersectionPoint(main_line, temp_line);
+
+                if((temp_vec.x > i->x && temp_vec.x > (i-1)->x) || (temp_vec.x < i->x && temp_vec.x < (i-1)->x))
+                    continue;
+
                 temp_vec.x -= position.x;
                 temp_vec.y -= position.y;//distance vector from position to IntersectionPoint
             }
-            
+
             //check if point is in the direction of angle
             if(cos(angle) > 0) {
                 if(temp_vec.y > 0) {
