@@ -1,17 +1,19 @@
 #include "math.hpp"
 
+const double angleToPi = 0.017453293;//pi divided by 180
+
 bool DoIntersect(const linear_function &first, const linear_function &second) { return first.m != second.m || first.c == second.c; }
 bool DoAlwaysIntersect(const linear_function &first, const linear_function & second) { return first.m == second.m && first.c == second.c; }
 bool IsInRange(const double &value, const double &max, const double &min){ return value < max && min < value; }
-double GetSloope(const double &angle) { return cos(angle)/sin(angle); }
+double GetSloope(const double &angle) { return tan(angle*angleToPi); }
 double GetPositive(const double &value) { return value < 0 ? -1*value : value; }
 
 double GetVectorLenght(const pair &vector) { return sqrt((vector.x*vector.x)+(vector.y*vector.y)); }
 
-pair& VectorFromAngle(const double &angle, const double &length) {
+pair VectorFromAngle(const double &angle, const double &length) {
     pair vector;
-    vector.x = sin(angle);
-    vector.y = cos(angle);
+    vector.x =  sin(angle*angleToPi);
+    vector.y =  cos(angle*angleToPi);
     //vector with length 1
     vector.x *= length;
     vector.y *= length;
@@ -19,19 +21,15 @@ pair& VectorFromAngle(const double &angle, const double &length) {
     return vector;
 }
 
-pair& IntersectionPoint(const linear_function &first, const linear_function &second) {
+pair IntersectionPoint(const linear_function &first, const linear_function &second) {
     pair position;
 
-    if (first.c == second.c) {
-        return position = {.x = 0, .y = first.c};
-    }
-
-    position.x = (first.m-second.m)/(second.c-first.c);
+    position.x = (second.c-first.c)/(first.m-second.m);
     position.y = first.c + (first.m*position.x);
     return position;
 }
 
-double DoIntersect(const double angle, const SDL_Point position, std::vector<SDL_Point> lines) {
+double DoIntersect(const double angle, const SDL_Point position, const std::vector<SDL_Point> &lines) {
     linear_function main_line;
     linear_function temp_line;
     pair temp_vec;
@@ -41,7 +39,7 @@ double DoIntersect(const double angle, const SDL_Point position, std::vector<SDL
     main_line.c = position.y - (main_line.m*position.x);
 
     for(auto i = lines.begin() + 1; i < lines.end(); i++) {
-        temp_line.m = (i->x - (i-1)->x)/(i->y - (i-1)->y);
+        temp_line.m = (i->y - (i-1)->y)/(i->x - (i-1)->x);
         temp_line.c = i->y - (temp_line.m * i->x);
         if (DoIntersect(main_line, temp_line)) {
             if(DoAlwaysIntersect(main_line, temp_line)) {
@@ -69,28 +67,29 @@ double DoIntersect(const double angle, const SDL_Point position, std::vector<SDL
                 }
             }else{
                 temp_vec = IntersectionPoint(main_line, temp_line);
-
-                if((temp_vec.x > i->x && temp_vec.x > (i-1)->x) || (temp_vec.x < i->x && temp_vec.x < (i-1)->x))
-                    continue;
+                
+                //sometimes random skip fix for efficienzy
+                //if((temp_vec.x > i->x && temp_vec.x > (i-1)->x) || (temp_vec.x < i->x && temp_vec.x < (i-1)->x))
+                //    continue;
 
                 temp_vec.x -= position.x;
                 temp_vec.y -= position.y;//distance vector from position to IntersectionPoint
             }
 
             //check if point is in the direction of angle
-            if(cos(angle) > 0) {
+            if( sin(angle*angleToPi) > 0) {
                 if(temp_vec.y > 0) {
                     temp_distance = GetVectorLenght(temp_vec);
                     if(temp_distance < distance)
                         distance = temp_distance;
                 }
-            }else if(cos(angle) < 0) {
+            }else if( sin(angle*angleToPi) < 0) {
                 if(temp_vec.y < 0) {
-                    temp_distance = GetVectorLenght(temp_vec);//check which of the two points is closer and in the direction of anglee = GetVectorLenght(temp_vec);
+                    temp_distance = GetVectorLenght(temp_vec);
                     if(temp_distance < distance)
                         distance = temp_distance;
                 }
-            }else if(sin(angle) > 0) {
+            }else if( cos(angle*angleToPi) > 0) {
                 if(temp_vec.x > 0) {
                     temp_distance = GetVectorLenght(temp_vec);
                     if(temp_distance < distance)
@@ -105,4 +104,6 @@ double DoIntersect(const double angle, const SDL_Point position, std::vector<SDL
             }
         }
     }
+
+    return distance;
 }

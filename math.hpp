@@ -1,9 +1,10 @@
 #pragma once
 #include <math.h>
+#include <iostream>
 #include <SDL2/SDL.h>
 #include <vector>
 
-const double max_distance = 100;//max detectable distance for sensor
+const double max_distance = 10000;//max detectable distance for sensor
 
 
 struct pair{
@@ -20,7 +21,7 @@ struct linear_function{
  * @param lenght is the length of the vector(arrow)
  * @return 2D vector
 **/
-extern pair& VectorFromAngle(const double &angle, const double &length);
+extern pair VectorFromAngle(const double &angle, const double &length);
 
 /**
  * @brief check if two linear functions do intersect
@@ -34,7 +35,7 @@ extern bool DoAlwaysInersect(const linear_function &first, const linear_function
  * @brief calculate where two linear functions interect NOTE: check if they DoIntersect before using this function
  * @return location where the two functions intersect
 **/
-extern pair& IntersectionPoint(const linear_function &first, const linear_function &second);
+extern pair IntersectionPoint(const linear_function &first, const linear_function &second);
 /**
  * @brief check if an value is in a range of numbers
  * @param max is the maximum for value
@@ -56,9 +57,16 @@ extern double GetSloope(const double &angle);
  * @param lines are the lines to which the distance is measured
  * @return the closest non negative distance to a line if it doesn't intersect any it will return max_distance
 **/
-extern double DoIntersect(const double angle, const SDL_Point position, std::vector<SDL_Point> lines);
+extern double DoIntersect(const double angle, const SDL_Point position, const std::vector<SDL_Point> &lines);
 
 /**
  * @brief return difference to 0
 **/
 extern double GetPositive(const double &value);
+
+/**
+ * @brief calculate the total lenght of an vector
+ * @param vector to caluclate lenght
+ * @return lenght of vector
+**/
+extern double GetVectorLenght(const pair &vector);
