@@ -1,4 +1,5 @@
 #include "interface/graphic.hpp"
+#include "math.hpp"
 #include <log.hpp>
 #include <iostream>
 #include <mutex>
@@ -36,7 +37,10 @@ int main(int argc, char const *argv[])
     double angle = 0;
     std::thread t_render(&start_graphic, map, mapW, mapH, std::ref(car_position), std::ref(angle), std::ref(renderer_running));
     renderer_running = true;
-    while(renderer_running) {angle++;}
+
+    for( angle; angle < 360; angle+=30) {
+        std::cout << DoIntersect(angle, car_position, map) << std::endl;
+    }
 
     t_render.join();
 
