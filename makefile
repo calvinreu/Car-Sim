@@ -1,8 +1,9 @@
 CC = g++
 
-default: interface/graphic.cpp interface/graphic.hpp
+default: interface/graphic.cpp interface/graphic.hpp math.cpp math.hpp main.cpp
 	$(CC) interface/graphic.cpp -c -lSDL2 -lSDL2_image -llog -o graphic.o
-	$(CC) main.cpp graphic.o -pthread -lSDL2 -lSDL2_image -llog -o carsim.out
+	$(CC) math.cpp -c -o math.o
+	$(CC) main.cpp graphic.o math.o -pthread -lSDL2 -lSDL2_image -llog -o carsim.out
 
 installation-rpm:
 	sudo dnf install SDL2
