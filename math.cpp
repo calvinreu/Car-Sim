@@ -29,7 +29,7 @@ pair IntersectionPoint(const linear_function &first, const linear_function &seco
     return position;
 }
 
-double DoIntersect(const double angle, const SDL_Point position, const std::vector<SDL_Point> &lines) {
+double DoIntersect(const double angle, const pair &position, const std::vector<SDL_Point> &lines) {
     linear_function main_line;
     linear_function temp_line;
     pair temp_vec;
