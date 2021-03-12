@@ -13,7 +13,7 @@ private:
     //some tensorflow AI
     double output[2];//[0]turn [1]speedchange
 
-    double input[(SENSOR_COUNT*2+1];//first half sensor distance second half sensor angle last for current speed
+    double input[(SENSOR_COUNT*2)+1];//first half sensor distance second half sensor angle last for current speed
 public:
     void refresh();
 
@@ -24,9 +24,11 @@ public:
 class sensornet
 {
 private:
-    double* sensorOutput;//does contain sensor angles
-    std::vector<SDL_Point>* map;
-    SDL_Point* carPos;
+    double* sensorOutput;
+    double* sensorAngle;
+    const double* carAngle;
+    const std::vector<SDL_Point>* map;
+    const SDL_Point* carPos;
 public:
     /**
      * @brief get new sensor data and set it to sensorOutput
@@ -37,5 +39,5 @@ public:
      * @param map map to use to calculate sensor output
      * @param carPosition position of the car in the current map 
     **/
-    sensornet(double* sensorOutput, const std::vector<SDL_Point> &map, const SDL_Point &carPosition);
-}
+    sensornet(double* sensorOutput, const double &carAngle, const std::vector<SDL_Point> &map, const SDL_Point &carPosition);
+};
