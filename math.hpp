@@ -57,7 +57,7 @@ extern double GetSloope(const double &angle);
  * @param lines are the lines to which the distance is measured
  * @return the closest non negative distance to a line if it doesn't intersect any it will return max_distance
 **/
-extern double DoIntersect(const double angle, const SDL_Point position, const std::vector<SDL_Point> &lines);
+extern double DoIntersect(const double angle, const pair &position, const std::vector<SDL_Point> &lines);
 
 /**
  * @brief return difference to 0
