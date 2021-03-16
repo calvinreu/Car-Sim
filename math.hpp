@@ -5,6 +5,7 @@
 #include <vector>
 
 const double max_distance = 10000;//max detectable distance for sensor
+const double angleToPi = 0.017453293;//pi divided by 180
 
 
 struct pair{
@@ -13,6 +14,10 @@ struct pair{
 
 struct linear_function{
     double m,c;
+};
+
+struct rect{
+    double x, y, w ,h;
 };
 
 /**
@@ -30,7 +35,7 @@ extern bool DoIntersect(const linear_function &first, const linear_function &sec
 /**
  * @brief check if two functions always intersect
 **/
-extern bool DoAlwaysInersect(const linear_function &first, const linear_function &second);
+extern bool DoAlwaysIntersect(const linear_function &first, const linear_function &second);
 /**
  * @brief calculate where two linear functions interect NOTE: check if they DoIntersect before using this function
  * @return location where the two functions intersect
@@ -49,15 +54,6 @@ extern bool IsInRange(const double &value, const double &max, const double &min)
  * @return the sloope m in a linear function
 **/
 extern double GetSloope(const double &angle);
-
-/**
- * @brief check the closest intersection a line with other lines
- * @param angle is the angle of the line on which the distance is measured
- * @param position is the start position of the line on which the distance is measured
- * @param lines are the lines to which the distance is measured
- * @return the closest non negative distance to a line if it doesn't intersect any it will return max_distance
-**/
-extern double DoIntersect(const double angle, const pair &position, const std::vector<SDL_Point> &lines);
 
 /**
  * @brief return difference to 0
