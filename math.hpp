@@ -26,43 +26,43 @@ struct rect{
  * @param lenght is the length of the vector(arrow)
  * @return 2D vector
 **/
-extern pair VectorFromAngle(const double &angle, const double &length);
+extern constexpr pair VectorFromAngle(const double &angle, const double &length);
 
 /**
  * @brief check if two linear functions do intersect
 **/
-extern bool DoIntersect(const linear_function &first, const linear_function &second);
+extern constexpr bool DoIntersect(const linear_function &first, const linear_function &second);
 /**
  * @brief check if two functions always intersect
 **/
-extern bool DoAlwaysIntersect(const linear_function &first, const linear_function &second);
+extern constexpr bool DoAlwaysIntersect(const linear_function &first, const linear_function &second);
 /**
  * @brief calculate where two linear functions interect NOTE: check if they DoIntersect before using this function
  * @return location where the two functions intersect
 **/
-extern pair IntersectionPoint(const linear_function &first, const linear_function &second);
+extern constexpr pair IntersectionPoint(const linear_function &first, const linear_function &second);
 /**
  * @brief check if an value is in a range of numbers
  * @param max is the maximum for value
  * @param min is the minimum for value
 **/
-extern bool IsInRange(const double &value, const double &max, const double &min);
+extern constexpr bool IsInRange(const double &value, const double &max, const double &min);
 
 /**
  * @brief get the sloope from an angle
  * @param angle the angle of the sloope
  * @return the sloope m in a linear function
 **/
-extern double GetSloope(const double &angle);
+extern constexpr double GetSloope(const double &angle);
 
 /**
  * @brief return difference to 0
 **/
-extern double GetPositive(const double &value);
+extern constexpr double GetPositive(const double &value);
 
 /**
  * @brief calculate the total lenght of an vector
  * @param vector to caluclate lenght
  * @return lenght of vector
 **/
-extern double GetVectorLenght(const pair &vector);
+extern constexpr double GetVectorLenght(const pair &vector);
