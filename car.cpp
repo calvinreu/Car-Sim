@@ -1,6 +1,48 @@
+#pragma once
 #include "car.hpp"
 
 extern const double angleToPi;//pi divided by 180
+extern const SDL_Rect car_sRect;
+
+constexpr double SensorDistanceToCenter(const double &angle) {
+    pair carCenter = {.x = car_sRect.w/2, .y = car_sRect.h/2};
+    linear_function sensorLine = {.m = GetSloope(angle), .c = carCenter.y - (GetSloope(angle)*carCenter.x)};
+    linear_function top = {.m = 0, .c = car_sRect.h};
+    linear_function bot = {.m = 0, .c = 0};
+
+    if(DoIntersect(sensorLine, top)){//has to intersect with bot too because bot and top are ||
+        pair topIntersect = IntersectionPoint(sensorLine, top);
+        pair botIntersect = IntersectionPoint(sensorLine, bot);
+        if(botIntersect.x < car_sRect.w && botIntersect.x > 0)
+            return GetVectorLenght(pair{.x = carCenter.x - botIntersect.x, .y = carCenter.y - botIntersect.y});
+        else if(topIntersect.x < car_sRect.w && topIntersect.x > 0)
+            return GetVectorLenght(pair{.x = carCenter.x - topIntersect.x, .y = carCenter.y - topIntersect.y});
+    }
+
+    return GetVectorLenght(pair{.x = carCenter.x, .y = carCenter.x/cos(angle*angleToPi)*sin(angle*angleToPi)});
+}
+
+constexpr pair SensorPosition(const pair &sensorPos) 
+{
+    pair carCenter = {.x = car_sRect.w/2, .y = car_sRect.h/2};
+    linear_function sensorLine = {.m = GetSloope(angle), .c = carCenter.y - (GetSloope(angle)*carCenter.x)};
+    linear_function top = {.m = 0, .c = car_sRect.h};
+    linear_function bot = {.m = 0, .c = 0};
+
+    if(DoIntersect(sensorLine, top)){//has to intersect with bot too because bot and top are ||
+        pair topIntersect = IntersectionPoint(sensorLine, top);
+        pair botIntersect = IntersectionPoint(sensorLine, bot);
+        if(botIntersect.x < car_sRect.w && botIntersect.x > 0)
+            return pair{.x = carCenter.x - botIntersect.x, .y = carCenter.y - botIntersect.y};
+        else if(topIntersect.x < car_sRect.w && topIntersect.x > 0)
+            return pair{.x = carCenter.x - topIntersect.x, .y = carCenter.y - topIntersect.y};
+    }
+
+    return pair{.x = carCenter.x, .y = carCenter.x/cos(angle*angleToPi)*sin(angle*angleToPi)};
+}
+
+const pair SENSOR_POSITION[SENSOR_COUNT] = {{.x = 0, .y = SensorDistanceToCenter(0)}, {.x = 90, .y = SensorDistanceToCenter(90)}};//.x angle relative to car .y distance to car center
+const double ANGLE_CHANGE[SENSOR_COUNT] = {10, 10, 10, 10};
 
 sensornet::sensornet(double* sensorOutput, const double &carAngle, const std::vector<SDL_Point> &map, const SDL_Point &carPos) : sensorOutput(sensorOutput), sensorAngle(sensorOutput+SENSOR_COUNT), carAngle(&carAngle), map(&map), carPos(&carPos) {}
 

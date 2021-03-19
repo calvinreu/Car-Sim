@@ -1,11 +1,7 @@
 #include <iostream>
 #include "math.hpp"
 
-
 const size_t SENSOR_COUNT = 4;
-const pair SENSOR_POSITION[SENSOR_COUNT] = {{.x = 0, .y = 0}};//.x angle relative to car .y distance to car center
-const double ANGLE_CHANGE[SENSOR_COUNT] = {1, 1, 1, 1};
-
 
 class car
 {
