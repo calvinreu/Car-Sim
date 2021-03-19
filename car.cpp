@@ -22,7 +22,7 @@ constexpr double SensorDistanceToCenter(const double &angle) {
     return GetVectorLenght(pair{.x = carCenter.x, .y = carCenter.x/cos(angle*angleToPi)*sin(angle*angleToPi)});
 }
 
-constexpr pair SensorPosition(const pair &sensorPos) 
+constexpr pair SensorPosition(const double &angle) 
 {
     pair carCenter = {.x = car_sRect.w/2, .y = car_sRect.h/2};
     linear_function sensorLine = {.m = GetSloope(angle), .c = carCenter.y - (GetSloope(angle)*carCenter.x)};
