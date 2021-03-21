@@ -1,5 +1,6 @@
 #include "interface/graphic.hpp"
 #include "math.hpp"
+#include "car.hpp"
 #include <log.hpp>
 #include <iostream>
 #include <mutex>
@@ -36,10 +37,11 @@ int main(int argc, char const *argv[])
     SDL_Point car_position = {.x = mapW/2, .y = mapH/2};
     double angle = 0;
     std::thread t_render(&start_graphic, map, mapW, mapH, std::ref(car_position), std::ref(angle), std::ref(renderer_running));
-    renderer_running = true;
 
-    for( angle; angle < 360; angle+=30) {
-        std::cout << DoIntersect(angle, car_position, map) << std::endl;
+    sensornet sensor(angle, map, car_position);    
+
+    for(size_t i= 0; i < 200; i++){
+        sensor.refresh();
     }
 
     t_render.join();
