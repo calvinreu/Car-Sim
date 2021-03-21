@@ -1,6 +1,6 @@
 CC = g++
 
-default: interface/graphic.cpp interface/graphic.hpp math.cpp math.hpp main.cpp
+default: interface/graphic.cpp interface/graphic.hpp math.cpp math.hpp car.cpp car.hpp main.cpp
 	$(CC) interface/graphic.cpp -c -lSDL2 -lSDL2_image -llog -o graphic.o
 	$(CC) math.cpp -c -o math.o
 	$(cc) car.cpp -c -o car.o
