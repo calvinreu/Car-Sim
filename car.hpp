@@ -1,7 +1,16 @@
 #include <iostream>
 #include "math.hpp"
 
-const size_t SENSOR_COUNT = 4;
+const size_t SENSOR_COUNT = 1;
+
+struct sensor{
+    double angle, distance;
+    bool direction;//true change angle + else -
+};
+
+struct sensor_angle_change{
+    double ammount, min_angle, max_angle;
+};
 
 class car
 {
@@ -22,11 +31,11 @@ public:
     ~car();
 };
 
+//sensornetwork for 1 car note sensornet may not work if multiple instances are created
 class sensornet
 {
 private:
-    double* sensorOutput;
-    double* sensorAngle;
+    sensor sensors[SENSOR_COUNT];
     const double* carAngle;
     const std::vector<SDL_Point>* map;
     const SDL_Point* carPos;
@@ -41,5 +50,5 @@ public:
      * @param map map to use to calculate sensor output
      * @param carPosition position of the car in the current map 
     **/
-    sensornet(double* sensorOutput, const double &carAngle, const std::vector<SDL_Point> &map, const SDL_Point &carPosition);
+    sensornet(const double &carAngle, const std::vector<SDL_Point> &map, const SDL_Point &carPosition);
 };
