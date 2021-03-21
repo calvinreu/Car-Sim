@@ -4,8 +4,8 @@
 #include <SDL2/SDL.h>
 #include <vector>
 
-const double max_distance = 10000;//max detectable distance for sensor
-const double angleToPi = 0.017453293;//pi divided by 180
+constexpr double max_distance = 10000;//max detectable distance for sensor
+constexpr double angleToPi = 0.017453293;//pi divided by 180
 
 
 struct pair{

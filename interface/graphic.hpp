@@ -12,7 +12,7 @@
 using logfile::log;
 using logfile::SDL_StringError;
 
-const SDL_Rect car_sRect = {.x = 0, .y = 0, .w = 90, .h = 200};
+constexpr SDL_Rect car_sRect = {.x = 0, .y = 0, .w = 90, .h = 200};
 
 //graphic output instance does not manage any logic like collision
 class graphic

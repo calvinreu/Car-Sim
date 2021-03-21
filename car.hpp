@@ -1,7 +1,7 @@
 #include <iostream>
 #include "math.hpp"
 
-const size_t SENSOR_COUNT = 1;
+constexpr size_t SENSOR_COUNT = 1;
 
 struct sensor{
     double angle, distance;
@@ -9,7 +9,7 @@ struct sensor{
 };
 
 struct sensor_angle_change{
-    double ammount, min_angle, max_angle;
+    double ammount, max_angle, min_angle;
 };
 
 class car

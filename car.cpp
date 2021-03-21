@@ -1,9 +1,9 @@
-#pragma once
 #include "car.hpp"
 #include "log.hpp"
+#include "math.cpp"
 
 extern const double angleToPi;//pi divided by 180
-extern const SDL_Rect car_sRect;
+constexpr SDL_Rect car_sRect = {.x = 0, .y = 0, .w = 90, .h = 200};
 
 constexpr double SensorDistanceToCenter(const double &angle) {
     pair carCenter = {.x = car_sRect.w/2, .y = car_sRect.h/2};
@@ -42,8 +42,10 @@ constexpr pair SensorPosition(const double &angle)
     return pair{.x = carCenter.x, .y = carCenter.x/cos(angle*angleToPi)*sin(angle*angleToPi)};
 }
 
-const pair SENSOR_POSITION[SENSOR_COUNT] = {{.x = 0, .y = SensorDistanceToCenter(0)}};//.x angle relative to car .y distance to car center
-const sensor_angle_change ANGLE_CHANGE[SENSOR_COUNT] = {{.ammount = 30, .max_angle = 90, .min_angle = -90}};
+constexpr pair front_sensor = {.x = 0, .y = SensorDistanceToCenter(0)};
+
+constexpr pair SENSOR_POSITION[SENSOR_COUNT] = {front_sensor};//.x angle relative to car .y distance to car center
+constexpr sensor_angle_change ANGLE_CHANGE[SENSOR_COUNT] = {{.ammount = 30, .max_angle = 90, .min_angle = -90}};
 
 sensornet::sensornet(const double &carAngle, const std::vector<SDL_Point> &map, const SDL_Point &carPos) : carAngle(&carAngle), map(&map), carPos(&carPos) {}
 
