@@ -1,5 +1,6 @@
 #pragma once
 #include "car.hpp"
+#include "log.hpp"
 
 extern const double angleToPi;//pi divided by 180
 extern const SDL_Rect car_sRect;
@@ -151,6 +152,8 @@ bool sensornet::refresh() {
             if(GetVectorLenght(temp_vec) < 40){//lenght which definetly is in the car
                 return false;
             }
+
+            logfile::log(std::to_string(distance));//just for testing
 
             sensors[j].distance = distance;
         }
