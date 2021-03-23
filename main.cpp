@@ -5,12 +5,16 @@
 #include <iostream>
 #include <mutex>
 
+std::mutex mtx;
+
 void start_graphic(const std::vector<SDL_Point> &map, const int &mapW, const int &mapH, const SDL_Point &car_position, const double &angle, bool &running) {
 
     log("init SDL");
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS);
     log("creating graphics instance");
+    std::unique_lock<std::mutex> lock(mtx);
     graphic gOut(map, mapW, mapH, car_position, angle);
+    lock.unlock();
     gOut.renderLoop(running);
     log("quit SDL");
     SDL_Quit();
@@ -41,7 +45,7 @@ int main(int argc, char const *argv[])
     sensornet sensor(angle, map, car_position);    
 
     for(size_t i= 0; i < 200; i++){
-        sensor.refresh();
+        logfile::log(std::to_string(sensor.refresh()));
     }
 
     t_render.join();
