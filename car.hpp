@@ -1,5 +1,6 @@
 #include <iostream>
 #include "math.hpp"
+#include "interface/graphic.hpp"
 
 constexpr size_t SENSOR_COUNT = 1;
 

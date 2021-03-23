@@ -1,11 +1,10 @@
 #include "car.hpp"
 #include "log.hpp"
-#include "math.cpp"
 
 extern const double angleToPi;//pi divided by 180
-constexpr SDL_Rect car_sRect = {.x = 0, .y = 0, .w = 90, .h = 200};
+extern const SDL_Rect car_sRect;
 
-constexpr double SensorDistanceToCenter(const double &angle) {
+const double SensorDistanceToCenter(const double &angle) {
     pair carCenter = {.x = car_sRect.w/2, .y = car_sRect.h/2};
     linear_function sensorLine = {.m = GetSloope(angle), .c = carCenter.y - (GetSloope(angle)*carCenter.x)};
     linear_function top = {.m = 0, .c = car_sRect.h};
@@ -23,7 +22,7 @@ constexpr double SensorDistanceToCenter(const double &angle) {
     return GetVectorLenght(pair{.x = carCenter.x, .y = carCenter.x/cos(angle*angleToPi)*sin(angle*angleToPi)});
 }
 
-constexpr pair SensorPosition(const double &angle) 
+const pair SensorPosition(const double &angle) 
 {
     pair carCenter = {.x = car_sRect.w/2, .y = car_sRect.h/2};
     linear_function sensorLine = {.m = GetSloope(angle), .c = carCenter.y - (GetSloope(angle)*carCenter.x)};
@@ -42,12 +41,19 @@ constexpr pair SensorPosition(const double &angle)
     return pair{.x = carCenter.x, .y = carCenter.x/cos(angle*angleToPi)*sin(angle*angleToPi)};
 }
 
-constexpr pair front_sensor = {.x = 0, .y = SensorDistanceToCenter(0)};
+const pair front_sensor = {.x = 0, .y = SensorDistanceToCenter(0)};
 
-constexpr pair SENSOR_POSITION[SENSOR_COUNT] = {front_sensor};//.x angle relative to car .y distance to car center
-constexpr sensor_angle_change ANGLE_CHANGE[SENSOR_COUNT] = {{.ammount = 30, .max_angle = 90, .min_angle = -90}};
+const pair SENSOR_POSITION[SENSOR_COUNT] = {front_sensor};//.x angle relative to car .y distance to car center
+const sensor_angle_change ANGLE_CHANGE[SENSOR_COUNT] = {{.ammount = 30, .max_angle = 90, .min_angle = -90}};
 
-sensornet::sensornet(const double &carAngle, const std::vector<SDL_Point> &map, const SDL_Point &carPos) : carAngle(&carAngle), map(&map), carPos(&carPos) {}
+sensornet::sensornet(const double &carAngle, const std::vector<SDL_Point> &map, const SDL_Point &carPos) : carAngle(&carAngle), map(&map), carPos(&carPos) {
+    for (size_t i = 0; i < SENSOR_COUNT; i++)
+    {
+        sensors[i].direction = true;
+        sensors[i].angle = 0;
+    }
+    
+}
 
 bool sensornet::refresh() {
     linear_function main_line[SENSOR_COUNT];
@@ -74,6 +80,7 @@ bool sensornet::refresh() {
             }
         }
 
+        sensors[i].distance = max_distance;
         angle[i] = SENSOR_POSITION[i].x+(*carAngle);
         sensorPos[i]= VectorFromAngle(angle[i], SENSOR_POSITION[i].y);
         sensorPos[i].x += carPos->x;
@@ -155,9 +162,11 @@ bool sensornet::refresh() {
                 return false;
             }
 
-            logfile::log(std::to_string(distance));//just for testing
+            if(distance < sensors[j].distance){
+                logfile::log(std::to_string(distance));//just for testing
 
-            sensors[j].distance = distance;
+                sensors[j].distance = distance;
+            }
         }
     }
 
