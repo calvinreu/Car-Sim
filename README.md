@@ -6,7 +6,7 @@ This Project is Licnensed under the MIT License Copyright © 2021 Calvin Reu
 
 ## TODO
 
-- add car movement with wasd to test collision
+- fix stretching of map when moving
 - add function to create distance map using sensor data
 - maybe if not lazy use a good method to detect colision before ai abuses bugs
 - add some form of semi-supervised learning ai to the car
