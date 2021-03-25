@@ -7,7 +7,7 @@
 
 std::mutex mtx;
 
-void start_graphic(const std::vector<SDL_Point> &map, const int &mapW, const int &mapH, const SDL_Point &car_position, const double &angle, bool &running) {
+void start_graphic(const std::vector<SDL_Point> &map, const int &mapW, const int &mapH, pair &car_position, double &angle, bool &running) {
 
     log("init SDL");
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_EVENTS);
@@ -38,7 +38,7 @@ int main(int argc, char const *argv[])
     mapload.read((char*)(&mapVSize), sizeof(std::size_t));
     std::vector<SDL_Point> map(mapVSize);
     mapload.read((char*)(&(*map.begin())), sizeof(SDL_Point) * mapVSize);
-    SDL_Point car_position = {.x = mapW/2, .y = mapH/2};
+    pair car_position = {.x = mapW/2, .y = mapH/2};
     double angle = 0;
     std::thread t_render(&start_graphic, map, mapW, mapH, std::ref(car_position), std::ref(angle), std::ref(renderer_running));
 

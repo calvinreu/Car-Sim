@@ -2,76 +2,101 @@
 
 using std::to_string;
 
-const Uint32 min_frame_time = 1000/30;
+const Uint32 min_frame_time = 1000 / 30;
+const double speed = 10;
+const double tilt_speed = 5;
 
-namespace background{
+namespace background
+{
     const Uint8 r = 255;
     const Uint8 g = 255;
     const Uint8 b = 255;
     const Uint8 a = 255;
 }
 
-namespace objects{
+namespace objects
+{
     const Uint8 r = 0;
     const Uint8 g = 0;
     const Uint8 b = 0;
     const Uint8 a = 255;
 }
 
-void graphic::renderLoop(bool &renderer_running) {
-    
+void graphic::renderLoop(bool &renderer_running)
+{
+
     Uint32 start_time, frame_time;
-        
+    //for testing wasd movement
+    const Uint8* keyboard;
+
     renderer_running = true;
-    while (renderer_running) {
+    while (renderer_running)
+    {
         start_time = SDL_GetTicks();
         SDL_Event event;
 
-        while (0 != SDL_PollEvent(&event)){
-            switch (event.type) {
+        while (0 != SDL_PollEvent(&event))
+        {
+            switch (event.type)
+            {
             case SDL_QUIT:
                 renderer_running = false;
                 return;
             }
         }
 
+        keyboard = SDL_GetKeyboardState(NULL);
+
+        if(keyboard[SDL_SCANCODE_W])
+            *carPos += VectorFromAngle(*car_angle, speed);
+        if(keyboard[SDL_SCANCODE_S])
+            *carPos -= VectorFromAngle(*car_angle, speed);
+        if(keyboard[SDL_SCANCODE_A])
+            *car_angle -= tilt_speed;
+        if(keyboard[SDL_SCANCODE_D])
+            *car_angle += tilt_speed;
+
+
         newFrame();
         frame_time = SDL_GetTicks() - start_time;
-        if(frame_time < min_frame_time)
-            SDL_Delay(min_frame_time-frame_time);
+        if (frame_time < min_frame_time)
+            SDL_Delay(min_frame_time - frame_time);
     }
 }
 
-void graphic::newFrame(){
+void graphic::newFrame()
+{
     SDL_SetRenderDrawColor(renderer, background::r, background::g, background::b, background::a);
     SDL_RenderClear(renderer);
-    map_sRect.x = carPos->x - (width()/2);
-    map_sRect.y = carPos->y - (height()/2);
+    map_sRect.x = carPos->x - (width() / 2);
+    map_sRect.y = carPos->y - (height() / 2);
     //log("set map sRect to| x:" + std::to_string(map_sRect.x) + " y:" + std::to_string(map_sRect.y) + " w:" + std::to_string(map_sRect.w) + " h:" + std::to_string(map_sRect.h));
     SDL_RenderCopy(renderer, map, &map_sRect, &map_dRect);
     SDL_RenderCopyEx(renderer, car, &car_sRect, &car_dRect, *car_angle, &carCenter, SDL_FLIP_NONE);
     SDL_RenderPresent(renderer);
 }
 
-graphic::graphic(const std::vector<SDL_Point> &map_info, const int &mWidth, const int &mHeight, const SDL_Point &car_position, const double &car_angle) : carPos(&car_position), car_angle(&car_angle)
+graphic::graphic(const std::vector<SDL_Point> &map_info, const int &mWidth, const int &mHeight, pair &car_position, double &car_angle) : carPos(&car_position), car_angle(&car_angle)
 {
     log("creating graphic instance");
-    
+
     log("creating Window");
     window = SDL_CreateWindow("car sim", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 0, 0, SDL_WINDOW_FULLSCREEN_DESKTOP);
-    if(window == NULL){
+    if (window == NULL)
+    {
         log("ERROR Unabe to create window: " + SDL_StringError());
         return;
     }
     log("creating renderer");
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-    if(renderer == NULL) {
+    if (renderer == NULL)
+    {
         log("ERROR Unable to create renderer: " + SDL_StringError());
         return;
     }
-    
+
     log("init SDL IMG");
-    if( !( IMG_Init( IMG_INIT_PNG ) & IMG_INIT_PNG ) )
+    if (!(IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG))
     {
         log("ERROR SDL_image could not intitialize: " + SDL_StringError());
         return;
@@ -79,32 +104,32 @@ graphic::graphic(const std::vector<SDL_Point> &map_info, const int &mWidth, cons
 
     //Load image at specified path
     log("loading car surface from image");
-    SDL_Surface* loadedSurface = IMG_Load("interface/res/car.png");
-    if( loadedSurface == NULL )
-        log( "ERROR Unable to load image: interface/res/car.png: " + SDL_StringError() );
+    SDL_Surface *loadedSurface = IMG_Load("interface/res/car.png");
+    if (loadedSurface == NULL)
+        log("ERROR Unable to load image: interface/res/car.png: " + SDL_StringError());
 
     log("loading car from surface");
     //Create texture from surface pixels
-    car = SDL_CreateTextureFromSurface( renderer, loadedSurface );
-    if( car == NULL )
+    car = SDL_CreateTextureFromSurface(renderer, loadedSurface);
+    if (car == NULL)
         log("ERROR Unable to create texture from surface: " + SDL_StringError());
 
     log("free surface");
     //Get rid of old loaded surface
-    SDL_FreeSurface( loadedSurface );
+    SDL_FreeSurface(loadedSurface);
 
     SDL_GetRendererOutputSize(renderer, &width(), &height());
 
-    car_dRect.w = car_sRect.w;    
+    car_dRect.w = car_sRect.w;
     car_dRect.h = car_sRect.h;
-    car_dRect.x = (width ()/2)-car_dRect.w/2;
-    car_dRect.y = (height()/2)-car_dRect.h/2;
+    car_dRect.x = (width() / 2) - car_dRect.w / 2;
+    car_dRect.y = (height() / 2) - car_dRect.h / 2;
 
-    carCenter.x = car_sRect.w /2;
-    carCenter.y = car_sRect.h /2;
+    carCenter.x = car_sRect.w / 2;
+    carCenter.y = car_sRect.h / 2;
 
     map_dRect.x = 0;
-    map_dRect.y = 0;    
+    map_dRect.y = 0;
 
     map_sRect.w = width();
     map_sRect.h = height();
@@ -117,27 +142,27 @@ graphic::graphic(const std::vector<SDL_Point> &map_info, const int &mWidth, cons
     log("creating map texture");
     log("creating blank texture");
     //Create uninitialized texture
-    map = SDL_CreateTexture( renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, mWidth, mHeight);
-    if( map == NULL )
+    map = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, mWidth, mHeight);
+    if (map == NULL)
         log("ERROR Unable to create blank texture: " + SDL_StringError());
-    
+
     log("rendering map texture");
-    if(SDL_SetRenderTarget(renderer, map) != 0)
+    if (SDL_SetRenderTarget(renderer, map) != 0)
         log("ERROR Unable to set map texture as render target");
 
-    SDL_SetRenderDrawColor(renderer, background::r,background::g,background::b,background::a);
+    SDL_SetRenderDrawColor(renderer, background::r, background::g, background::b, background::a);
     SDL_RenderClear(renderer);
 
-    SDL_SetRenderDrawColor(renderer, objects::r,objects::g,objects::b,objects::a);
+    SDL_SetRenderDrawColor(renderer, objects::r, objects::g, objects::b, objects::a);
 
     SDL_RenderDrawLines(renderer, &(*map_info.begin()), map_info.size());
 
-    if(SDL_SetRenderTarget(renderer, NULL) != 0)
+    if (SDL_SetRenderTarget(renderer, NULL) != 0)
         log("ERROR Unable to set window as render target");
-
 }
 
-graphic::~graphic() {
+graphic::~graphic()
+{
     SDL_DestroyTexture(map);
     SDL_DestroyTexture(car);
     SDL_DestroyRenderer(renderer);

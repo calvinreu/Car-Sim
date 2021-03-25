@@ -8,6 +8,7 @@
 #include <thread>
 #include <iostream>
 #include <mutex>
+#include "../math.hpp"
 
 using logfile::log;
 using logfile::SDL_StringError;
@@ -22,13 +23,13 @@ private:
     SDL_Texture*  map      = NULL;
     SDL_Window*   window   = NULL;
     SDL_Renderer* renderer = NULL;
-    const SDL_Point* carPos;//Position of car and center of map
+    pair* carPos;//Position of car and center of map
     SDL_Rect car_dRect;
     SDL_Rect map_sRect;
     SDL_Rect map_dRect;
 
     SDL_Point carCenter;
-    const double* car_angle;
+    double* car_angle;
 
     int& width()  {return map_dRect.w;}
     int& height() {return map_dRect.h;}
@@ -50,7 +51,7 @@ public:
      * @param car_position the coordinates of the car
      * @brief create a graphics instance with initialized map
     **/
-    graphic(const std::vector<SDL_Point> &map, const int &mWidth, const int &mHeight, const SDL_Point &car_position, const double &car_angle);
+    graphic(const std::vector<SDL_Point> &map, const int &mWidth, const int &mHeight, pair &car_position, double &car_angle);
     ~graphic();
 };
 

@@ -10,6 +10,12 @@ const double angleToPi = 0.017453293;//pi divided by 180
 
 struct pair{
     double x,y;
+    pair operator+(const pair &other) const;
+    pair operator-(const pair &other) const;
+    void operator=(const pair &other);
+    void operator+=(const pair &other);
+    void operator-=(const pair &other);
+
 };
 
 struct linear_function{

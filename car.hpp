@@ -23,7 +23,6 @@ private:
 
     double angle;
     pair carPos;
-    SDL_FPoint carPosRender;//car position for rendering
 
 public:
     void refresh();
@@ -39,7 +38,7 @@ private:
     sensor sensors[SENSOR_COUNT];
     const double* carAngle;
     const std::vector<SDL_Point>* map;
-    const SDL_Point* carPos;
+    const pair* carPos;
 public:
     /**
      * @brief get new sensor data and set it to sensorOutput
@@ -51,5 +50,5 @@ public:
      * @param map map to use to calculate sensor output
      * @param carPosition position of the car in the current map 
     **/
-    sensornet(const double &carAngle, const std::vector<SDL_Point> &map, const SDL_Point &carPosition);
+    sensornet(const double &carAngle, const std::vector<SDL_Point> &map, const pair &carPosition);
 };

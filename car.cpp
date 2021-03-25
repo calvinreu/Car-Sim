@@ -46,7 +46,7 @@ const pair front_sensor = {.x = 0, .y = SensorDistanceToCenter(0)};
 const pair SENSOR_POSITION[SENSOR_COUNT] = {front_sensor};//.x angle relative to car .y distance to car center
 const sensor_angle_change ANGLE_CHANGE[SENSOR_COUNT] = {{.ammount = 30, .max_angle = 90, .min_angle = -90}};
 
-sensornet::sensornet(const double &carAngle, const std::vector<SDL_Point> &map, const SDL_Point &carPos) : carAngle(&carAngle), map(&map), carPos(&carPos) {
+sensornet::sensornet(const double &carAngle, const std::vector<SDL_Point> &map, const pair &carPos) : carAngle(&carAngle), map(&map), carPos(&carPos) {
     for (size_t i = 0; i < SENSOR_COUNT; i++)
     {
         sensors[i].direction = true;

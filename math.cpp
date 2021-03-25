@@ -6,6 +6,11 @@ const bool IsInRange(const double &value, const double &max, const double &min){
 const double GetSloope(const double &angle) { return tan(angle*angleToPi); }
 const double GetPositive(const double &value) { return value < 0 ? -1*value : value; }
 const double GetVectorLenght(const pair &vector) { return sqrt((vector.x*vector.x)+(vector.y*vector.y)); }
+pair pair::operator-(const pair &other) const {return pair{.x = this->x-other.x, .y = this->y - other.y}; }
+pair pair::operator+(const pair &other) const {return pair{.x = this->x+other.x, .y = this->y + other.y}; }
+void pair::operator=(const pair &other){this->x = other.x, this->y = other.y; }
+void pair::operator+=(const pair &other){this->x += other.x, this->y += other.y; }
+void pair::operator-=(const pair &other){this->x -= other.x, this->y -= other.y; }
 
 const pair VectorFromAngle(const double &angle, const double &length) {
     pair vector = {.x =  sin(angle*angleToPi)*length, .y =  cos(angle*angleToPi)*length};
