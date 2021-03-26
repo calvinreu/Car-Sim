@@ -5,6 +5,8 @@
 
 using logfile::log;
 
+const size_t size_multiplier = 5;
+
 int main(int argc, char const *argv[])
 {
     if(argc < 2) {
@@ -24,6 +26,14 @@ int main(int argc, char const *argv[])
     size_t temp = UI.lines.size();
     int tempA[2];
     SDL_GetRendererOutputSize(UI.renderer, tempA, tempA+1);
+
+    tempA[0] *= size_multiplier;
+    tempA[1] *= size_multiplier;
+
+    for(auto i = UI.lines.begin(); i < UI.lines.end(); i++){
+        i->x *= size_multiplier;
+        i->y *= size_multiplier;
+    }
 
     saveFile.write((char*)(tempA), sizeof(int)*2);
     saveFile.write((char*)(&temp), sizeof(std::size_t));
