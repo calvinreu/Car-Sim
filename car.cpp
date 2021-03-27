@@ -44,16 +44,10 @@ const pair SensorPosition(const double &angle)
 const pair front_sensor = {.x = 0, .y = SensorDistanceToCenter(0)};
 
 const pair SENSOR_POSITION[SENSOR_COUNT] = {front_sensor};//.x angle relative to car .y distance to car center
-const sensor_angle_change ANGLE_CHANGE[SENSOR_COUNT] = {{.ammount = 30, .max_angle = 90, .min_angle = -90}};
+const sensor_angle_change ANGLE_CHANGE = {.ammount = 30, .max_angle = 90, .min_angle = -90};
+const size_t DATA_PER_SENSOR = ((ANGLE_CHANGE.max_angle - ANGLE_CHANGE.min_angle)/ANGLE_CHANGE.ammount)+1;
 
-sensornet::sensornet(const double &carAngle, const std::vector<SDL_Point> &map, const pair &carPos) : carAngle(&carAngle), map(&map), carPos(&carPos) {
-    for (size_t i = 0; i < SENSOR_COUNT; i++)
-    {
-        sensors[i].direction = true;
-        sensors[i].angle = 0;
-    }
-    
-}
+sensornet::sensornet(const double &carAngle, const std::vector<SDL_Point> &map, const pair &carPos, double* distance_buffer) : carAngle(&carAngle), map(&map), carPos(&carPos), distance_buffer(distance_buffer) {}
 
 bool sensornet::refresh() {
     linear_function main_line[SENSOR_COUNT];
@@ -62,33 +56,23 @@ bool sensornet::refresh() {
     double angle[SENSOR_COUNT];
     pair temp_vec;
     double temp_distance;
-    double distance = max_distance; //smallest distance
+    size_t runC = 0;
 
+    for(double a = ANGLE_CHANGE.min_angle; a <= ANGLE_CHANGE.max_angle; a += ANGLE_CHANGE.ammount){
+    double distance = max_distance; //smallest distance
+ 
     for (size_t i = 0; i < SENSOR_COUNT; i++)
     {
-        if(sensors[i].direction) {
-            sensors[i].angle += ANGLE_CHANGE[i].ammount;
-            if(sensors[i].angle > ANGLE_CHANGE[i].max_angle){
-                sensors[i].direction = false;
-                sensors[i].angle -= 2*ANGLE_CHANGE[i].ammount;
-            }
-        }else{
-            sensors[i].angle -= ANGLE_CHANGE[i].ammount;
-            if(sensors[i].angle < ANGLE_CHANGE[i].min_angle){
-                sensors[i].direction = true;
-                sensors[i].angle += 2*ANGLE_CHANGE[i].ammount;
-            }
-        }
-
-        sensors[i].distance = max_distance;
         angle[i] = SENSOR_POSITION[i].x+(*carAngle);
         sensorPos[i]= VectorFromAngle(angle[i], SENSOR_POSITION[i].y);
         sensorPos[i].x += carPos->x;
         sensorPos[i].y += carPos->y;
-        angle[i] += sensors[i].angle;
-        // sensorOutput[i] = this->Intersect(, sensorPos, *map);
+        angle[i] += a;
         main_line[i].m = GetSloope(angle[i]);
         main_line[i].c = sensorPos[i].y - (main_line[i].m*sensorPos[i].x);
+        for(size_t n = 0; n < DATA_PER_SENSOR; n++){
+            distance_buffer[(i*DATA_PER_SENSOR)+n] = max_distance;
+        }
     }
     
     for(auto i = map->begin() + 1; i < map->end(); i++) {
@@ -162,12 +146,15 @@ bool sensornet::refresh() {
                 return false;
             }
 
-            if(distance < sensors[j].distance){
-                logfile::log(std::to_string(distance));//just for testing
+            if(distance < distance_buffer[(j*DATA_PER_SENSOR)+runC]){
+                logfile::log("ANGLE: " + std::to_string(a) + " " + std::to_string(distance));//just for testing
 
-                sensors[j].distance = distance;
+                distance_buffer[(j*DATA_PER_SENSOR)+runC] = distance;
             }
         }
+    }
+
+    runC++;
     }
 
     return true;

@@ -35,10 +35,10 @@ public:
 class sensornet
 {
 private:
-    sensor sensors[SENSOR_COUNT];
     const double* carAngle;
     const std::vector<SDL_Point>* map;
     const pair* carPos;
+    double* distance_buffer;
 public:
     /**
      * @brief get new sensor data and set it to sensorOutput
@@ -50,5 +50,5 @@ public:
      * @param map map to use to calculate sensor output
      * @param carPosition position of the car in the current map 
     **/
-    sensornet(const double &carAngle, const std::vector<SDL_Point> &map, const pair &carPosition);
+    sensornet(const double &carAngle, const std::vector<SDL_Point> &map, const pair &carPosition, double *distance_buffer);
 };
